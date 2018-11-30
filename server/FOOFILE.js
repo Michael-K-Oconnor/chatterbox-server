@@ -1,7 +1,5 @@
 
 
-let FOOFILES = {
-
-};
+let FOOFILES = {};
 
 module.exports = FOOFILES;
