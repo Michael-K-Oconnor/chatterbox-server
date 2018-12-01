@@ -33,7 +33,10 @@ var requestHandler = function (request, response) {
     response.end(body);
   }
 
-
+  if (request.method === 'OPTIONS') {
+    var statusCode = 200;
+    response.writeHead(statusCode, headers);
+  }
 
 
   if (request.method === 'GET' && request.url === '/classes/messages') {

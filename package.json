@@ -8,6 +8,10 @@
   "engines": {
     "node": ">=4.0.0"
   },
+  "dependencies": {
+    "jquery": "^3.3.1",
+    "underscore": "^1.9.1"
+  },
   "scripts": {
     "postinstall": "curl -s https://raw.githubusercontent.com/reactorcore/pomander/master/bin/install | bash",
     "start": "node server/basic-server.js",
