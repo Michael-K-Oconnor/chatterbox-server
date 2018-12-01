@@ -1,26 +1,26 @@
 var Rooms = {
 
-
   _data: new Set,
 
   selected: 'lobby',
 
-  items: function() {
+  items: function () {
     return _.chain([...Rooms._data]);
   },
 
-  isSelected: function(roomname) {
+  isSelected: function (roomname) {
     return roomname === Rooms.selected ||
-           !roomname && Rooms.selected === 'lobby';
+      !roomname && Rooms.selected === 'lobby';
   },
 
-  add: function(room, callback = ()=>{}) {
+  add: function (room, callback = () => { }) {
     Rooms._data.add(room);
     Rooms.selected = room;
+    console.log(Rooms.items());
     callback(Rooms.items());
   },
 
-  update: function(messages, callback = ()=>{}) {
+  update: function (messages, callback = () => { }) {
     var length = Rooms._data.size;
 
     _.chain(messages)
@@ -38,5 +38,5 @@ var Rooms = {
       callback(Rooms.items());
     }
   }
-  
+
 };

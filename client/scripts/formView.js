@@ -1,6 +1,6 @@
 var FormView = {
 
-  $form: $('form'),
+  $form: $('#send'),
 
   initialize: function () {
     FormView.$form.on('submit', FormView.handleSubmit);
@@ -9,7 +9,6 @@ var FormView = {
   handleSubmit: function (event) {
     // Stop the browser from submitting the form
     event.preventDefault();
-    console.log('I WORKY');
 
 
     var message = {
@@ -17,11 +16,12 @@ var FormView = {
       text: FormView.$form.find('#message').val(),
       roomname: Rooms.selected || 'lobby'
     };
-
+    FormView.$form[0].reset();
     Parse.create(message, (data) => {
-      _.extend(message, data);
-      Messages.add(message, MessagesView.render);
+      data = JSON.parse(data);
+      Messages.add(data, MessagesView.render);
     });
+
   },
 
   setStatus: function (active) {

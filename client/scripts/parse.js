@@ -3,7 +3,6 @@ var Parse = {
   server: 'http://127.0.0.1:3000/classes/messages',
 
   create: function (message, successCB, errorCB = null) {
-
     $.ajax({
       url: Parse.server,
       type: 'POST',
@@ -17,7 +16,6 @@ var Parse = {
   },
 
   readAll: function (successCB, errorCB = null) {
-    console.log('ME TOO');
     $.ajax({
       url: Parse.server,
       type: 'GET',

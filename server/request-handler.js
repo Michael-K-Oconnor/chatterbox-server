@@ -1,5 +1,82 @@
 var FOODB = require('./FOOFILE');
 
+
+var requestHandler = function (request, response) {
+
+
+  // ******************************* //
+  //       Default Settings          //
+
+  var defaultCorsHeaders = {
+    'access-control-allow-origin': '*',
+    'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'access-control-allow-headers': 'content-type, accept',
+    'access-control-max-age': 10 // Seconds.
+  };
+  var statusCode = 200;
+  var headers = defaultCorsHeaders;
+  headers['Content-Type'] = 'application/JSON';
+  let modifiedURL = request.url.split('?')[0];
+  let searchFilter = request.url.split('?')[1];
+  debugger;
+  console.log('Serving request type ' + request.method + ' for url ' + request.url);
+  // console.log('modified URL', modifiedURL);
+  /////////////////////////////////////
+
+  if (request.method === 'OPTIONS') {
+    let body = JSON.stringify(defaultCorsHeaders['access-control-allow-methods']);
+    response.writeHead(statusCode, headers);
+    response.end(body);
+  }
+
+  if (request.method === 'GET' && modifiedURL !== '/classes/messages') {
+    var statusCode = 404;
+    var body = JSON.stringify({ results: [] });
+    response.writeHead(statusCode, headers);
+    response.end(body);
+  }
+
+
+  if (request.method === 'GET' && modifiedURL === '/classes/messages') {
+    if (FOODB[modifiedURL]) {
+      var body = JSON.stringify({ results: FOODB[modifiedURL] });
+    } else {
+      var body = JSON.stringify({ results: [] });
+    }
+    response.writeHead(statusCode, headers);
+    response.end(body);
+  }
+
+  if (request.method === 'POST') {
+    var statusCode = 201;
+    request.setEncoding('utf8');
+    let body = '';
+    request.on('data', chunk => {
+      body += chunk.toString();
+    });
+    request.on('end', () => {
+      body = JSON.parse(body);
+      body.createdAt = JSON.stringify(new Date());
+      body.objectId = JSON.stringify(new Date());
+
+      if (FOODB[modifiedURL]) {
+        FOODB[modifiedURL].push(body);
+      } else {
+        FOODB[modifiedURL] = [body];
+      }
+      response.writeHead(statusCode, headers);
+      response.end(JSON.stringify(body));
+    });
+  }
+
+
+};
+
+
+module.exports.requestHandler = requestHandler;
+
+
+
 /*************************************************************
 
 You should implement your request handler function in this file.
@@ -14,66 +91,6 @@ this file and include it in basic-server.js so that it actually works.
 
 **************************************************************/
 
-var requestHandler = function (request, response) {
-  var defaultCorsHeaders = {
-    'access-control-allow-origin': '*',
-    'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'access-control-allow-headers': 'content-type, accept',
-    'access-control-max-age': 10 // Seconds.
-  };
-  var headers = defaultCorsHeaders;
-  headers['Content-Type'] = 'application/JSON';
-
-  console.log('Serving request type ' + request.method + ' for url ' + request.url);
-
-  if (request.method === 'GET' && request.url !== '/classes/messages') {
-    var statusCode = 404;
-    var body = JSON.stringify({ results: [] });
-    response.writeHead(statusCode, headers);
-    response.end(body);
-  }
-
-  if (request.method === 'OPTIONS') {
-    var statusCode = 200;
-    response.writeHead(statusCode, headers);
-  }
-
-
-  if (request.method === 'GET' && request.url === '/classes/messages') {
-    var statusCode = 200;
-    if (FOODB[request.url]) {
-      var body = JSON.stringify({ results: FOODB[request.url] });
-    } else {
-      var body = JSON.stringify({ results: [] });
-    }
-
-
-    response.writeHead(statusCode, headers);
-    response.end(body);
-
-  } else if (request.method === 'POST') {
-    var statusCode = 201;
-
-
-    request.setEncoding('utf8');
-    let body = '';
-    request.on('data', chunk => {
-      body += chunk.toString();
-    });
-    request.on('end', () => {
-      body = JSON.parse(body);
-      if (FOODB[request.url]) {
-        FOODB[request.url].push(body);
-      } else {
-        FOODB[request.url] = [body];
-      }
-      body = JSON.stringify(FOODB);
-
-      response.writeHead(statusCode, headers);
-      response.end(body);
-    });
-
-  }
 
   // Request and Response come from node's http module.
   //
@@ -124,8 +141,3 @@ var requestHandler = function (request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-
-};
-
-
-module.exports.requestHandler = requestHandler;

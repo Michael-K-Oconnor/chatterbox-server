@@ -36,6 +36,10 @@
       <select id="allRooms" onchange="App.initialize()">
         <option>~~~ PICK A ROOM ~~~</option>
       </select>
+      <form action="#" id="roomName" method="post">
+        <input type="text" name="message" id="message" placeholder="Add a Chatroom" />
+        <input type="submit" value="submit" name="submit" class="submit" />
+      </form>
     </div>
     <form action="#" id="send" method="post">
       <input type="text" name="message" id="message" placeholder="Message" />
@@ -55,16 +59,6 @@
   <script src="client/scripts/app.js"></script>
   <script>
     $(() => App.initialize());
-
-    document.getElementById('allRooms').addEventListener("change", function () {
-      document.querySelector('select[id="allRooms"]').onchange = MessagesView.changeRoom(event)
-    },
-      false);
-
-    //Create Event Handler for when user selects a room 
-      //when select is activated 
-        //re-initialize chats that pertain to that room 
-
   </script>
   <script>
 
